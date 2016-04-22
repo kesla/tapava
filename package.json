@@ -7,10 +7,6 @@
     "test": "semistandard",
     "prepublish": "mkdir -p dist && babel lib --out-dir dist"
   },
-  "repository": {
-    "type": "git",
-    "url": "tapava"
-  },
   "author": "David Björklund <david.bjorklund@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -22,5 +18,17 @@
     "babel-preset-es2015": "^6.5.0",
     "semistandard": "^7.0.5",
     "snazzy": "^3.0.0"
-  }
+  },
+  "keywords": [
+    "ava",
+    "tape"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kesla/tapava.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kesla/tapava/issues"
+  },
+  "homepage": "https://github.com/kesla/tapava#readme"
 }
