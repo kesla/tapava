@@ -90,3 +90,7 @@ tape('promises, errors', t => {
     }
   );
 });
+
+if (process.browser) {
+  tape.onFinish(window.close);
+}
