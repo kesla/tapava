@@ -13,6 +13,8 @@
   "author": "David Björklund <david.bjorklund@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "co": "^4.6.0",
+    "is-generator": "^1.0.3",
     "tape": "^4.4.0",
     "tape-catch": "^1.0.5"
   },

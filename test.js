@@ -91,6 +91,26 @@ tape('promises, errors', t => {
   );
 });
 
+tape('generator', t => {
+  runTest(
+    function * (tt) {
+      tt.pass('first');
+      yield new Promise(resolve => {
+        setImmediate(() => {
+          tt.pass('bling bling');
+          resolve();
+        });
+      });
+    },
+    result => {
+      t.ok(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.pass, 2);
+      t.end();
+    }
+  );
+});
+
 if (process.browser) {
   tape.onFinish(window.close);
 }
