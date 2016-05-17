@@ -91,6 +91,36 @@ tape('promises, errors', t => {
   );
 });
 
+tape('generator', t => {
+  runTest(
+    function * (tt) {
+      tt.pass('first');
+      yield new Promise(resolve => {
+        setImmediate(() => {
+          tt.pass('bling bling');
+          resolve();
+        });
+      });
+    },
+    result => {
+      t.ok(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.pass, 2);
+      t.end();
+    }
+  );
+});
+
+tape('only', t => {
+  const test = tapava.createHarness();
+  test('test1', tt => {});
+  test.only('test2', tt => {});
+  test.createStream().pipe(concat({encoding: 'string'}, string => {
+    t.is(string.split('\n')[1], '# test2');
+    t.end();
+  }));
+});
+
 if (process.browser) {
   tape.onFinish(window.close);
 }
