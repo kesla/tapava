@@ -9,7 +9,7 @@ const runTest = (fn, onResult) => {
   test.createStream().pipe(parser(onResult));
 };
 
-tape('msg', t => {
+tape('title', t => {
   const test = tapava.createHarness();
   test('the message', tt => {});
   test.createStream().pipe(concat({encoding: 'string'}, string => {
