@@ -6,16 +6,22 @@ import concat from 'concat-stream';
 const runTest = (fn, onResult) => {
   const test = tapava.createHarness();
   test(fn);
-  test.createStream().pipe(parser(onResult));
+  testToResult(test, onResult);
 };
+
+const testToResult = (test, onResult) =>
+  test.createStream().pipe(parser(onResult));
+
+const testToString = (test, onString) =>
+  test.createStream().pipe(concat({encoding: 'string'}, onString));
 
 tape('title', t => {
   const test = tapava.createHarness();
   test('the message', tt => {});
-  test.createStream().pipe(concat({encoding: 'string'}, string => {
+  testToString(test, string => {
     t.is(string.split('\n')[1], '# the message');
     t.end();
-  }));
+  });
 });
 
 tape('throwing is failing', t => {
@@ -115,10 +121,22 @@ tape('only', t => {
   const test = tapava.createHarness();
   test('test1', tt => {});
   test.only('test2', tt => {});
-  test.createStream().pipe(concat({encoding: 'string'}, string => {
+  testToString(test, string => {
     t.is(string.split('\n')[1], '# test2');
     t.end();
-  }));
+  });
+});
+
+tape('skip', t => {
+  const test = tapava.createHarness();
+  test.skip('this should not be run', tt => {
+    t.fail('wtf');
+  });
+  testToResult(test, result => {
+    t.ok(result.ok);
+    t.equal(result.count, 0);
+    t.end();
+  });
 });
 
 if (process.browser) {
