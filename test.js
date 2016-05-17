@@ -111,6 +111,16 @@ tape('generator', t => {
   );
 });
 
+tape('only', t => {
+  const test = tapava.createHarness();
+  test('test1', tt => {});
+  test.only('test2', tt => {});
+  test.createStream().pipe(concat({encoding: 'string'}, string => {
+    t.is(string.split('\n')[1], '# test2');
+    t.end();
+  }));
+});
+
 if (process.browser) {
   tape.onFinish(window.close);
 }
