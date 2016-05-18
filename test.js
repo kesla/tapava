@@ -283,6 +283,34 @@ tape('t.deepEqual() / t.notDeepEqual()', t => {
   );
 });
 
+tape('t.throws / t.notThrows with functions', t => {
+  t.plan(6);
+
+  runTest(
+    tt => {
+      tt.throws(() => { throw new Error('beep boop'); });
+      tt.notThrows(() => {});
+    },
+    result => {
+      t.ok(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.pass, 2);
+    }
+  );
+
+  runTest(
+    tt => {
+      tt.throws(() => {});
+      tt.notThrows(() => { throw new Error('beep boop'); });
+    },
+    result => {
+      t.notOk(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.fail, 2);
+    }
+  );
+});
+
 tape('t.end() is not allowed', t => {
   runTest(
     tt => {
