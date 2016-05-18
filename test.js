@@ -2,6 +2,7 @@ import tape from 'tape-catch';
 import tapava from './lib';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
+import Promise from 'bluebird';
 
 const runTest = (fn, onResult) => {
   const test = tapava.createHarness();
@@ -302,6 +303,34 @@ tape('t.throws / t.notThrows with functions', t => {
     tt => {
       tt.throws(() => {});
       tt.notThrows(() => { throw new Error('beep boop'); });
+    },
+    result => {
+      t.notOk(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.fail, 2);
+    }
+  );
+});
+
+tape('t.throws / t.notThrows with promises', t => {
+  t.plan(6);
+
+  runTest(
+    function * (tt) {
+      yield tt.throws(Promise.reject(new Error('beep boop')));
+      yield tt.notThrows(Promise.resolve());
+    },
+    result => {
+      t.ok(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.pass, 2);
+    }
+  );
+
+  runTest(
+    function * (tt) {
+      yield tt.throws(Promise.resolve());
+      yield tt.notThrows(Promise.reject(new Error('beep boop')));
     },
     result => {
       t.notOk(result.ok);
