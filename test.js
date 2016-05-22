@@ -284,6 +284,34 @@ tape('t.deepEqual() / t.notDeepEqual()', t => {
   );
 });
 
+tape('t.match() / t.notMatch()', t => {
+  t.plan(6);
+
+  runTest(
+    tt => {
+      tt.match({foo: true, beep: 'boop'}, {foo: true});
+      tt.notMatch({foo: true, beep: 'boop'}, {foo: false});
+    },
+    result => {
+      t.ok(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.pass, 2);
+    }
+  );
+
+  runTest(
+    tt => {
+      tt.match({foo: true, beep: 'boop'}, {foo: false});
+      tt.notMatch({foo: true, beep: 'boop'}, {foo: true});
+    },
+    result => {
+      t.notOk(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.fail, 2);
+    }
+  );
+});
+
 tape('t.throws / t.notThrows with functions', t => {
   t.plan(6);
 
