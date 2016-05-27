@@ -188,38 +188,47 @@ tape('t.pass() / t.fail()', t => {
   );
 });
 
-tape('t.truthy() / t.falsy()', t => {
-  t.plan(6);
-
+tape('t.truthy() / t.falsy() passing', t => {
   runTest(
     tt => {
       tt.truthy(1);
       tt.falsy(0);
     },
     result => {
-      console.log('result', result);
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
+      t.end();
     }
   );
+});
 
+tape('t.truthy() / t.falsy() failing', t => {
   runTest(
     tt => {
       tt.truthy(0);
       tt.falsy(1);
+      tt.truthy(0, 'foo');
+      tt.falsy(1, 'bar');
     },
     result => {
+      t.equal(result.failures[0].diag.operator, 'truthy');
+      t.equal(result.failures[0].name, 'should be truthy');
+      t.equal(result.failures[1].diag.operator, 'falsy');
+      t.equal(result.failures[1].name, 'should be falsy');
+      t.equal(result.failures[2].diag.operator, 'truthy');
+      t.equal(result.failures[2].name, 'foo');
+      t.equal(result.failures[3].diag.operator, 'falsy');
+      t.equal(result.failures[3].name, 'bar');
       t.notOk(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.fail, 2);
+      t.equal(result.count, 4);
+      t.equal(result.fail, 4);
+      t.end();
     }
   );
 });
 
 tape('t.true() / t.false()', t => {
-  t.plan(6);
-
   runTest(
     tt => {
       tt.true(true);
@@ -229,25 +238,37 @@ tape('t.true() / t.false()', t => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
+      t.end();
     }
   );
+});
 
+tape('t.true() / t.false() failing', t => {
   runTest(
     tt => {
       tt.true(1);
       tt.false(0);
+      tt.true(1, 'foo');
+      tt.false(0, 'bar');
     },
     result => {
+      t.equal(result.failures[0].diag.operator, true);
+      t.equal(result.failures[0].name, 'should be true');
+      t.equal(result.failures[1].diag.operator, false);
+      t.equal(result.failures[1].name, 'should be false');
+      t.equal(result.failures[2].diag.operator, true);
+      t.equal(result.failures[2].name, 'foo');
+      t.equal(result.failures[3].diag.operator, false);
+      t.equal(result.failures[3].name, 'bar');
       t.notOk(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.fail, 2);
+      t.equal(result.count, 4);
+      t.equal(result.fail, 4);
+      t.end();
     }
   );
 });
 
 tape('t.is() / t.not()', t => {
-  t.plan(6);
-
   runTest(
     tt => {
       tt.is(1, 1);
@@ -257,25 +278,37 @@ tape('t.is() / t.not()', t => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
+      t.end();
     }
   );
+});
 
+tape('t.is() / t.not() failing', t => {
   runTest(
     tt => {
       tt.is(1, '1');
       tt.not(1, 1);
+      tt.is(1, '1', 'foo');
+      tt.not(1, 1, 'bar');
     },
     result => {
+      t.equal(result.failures[0].diag.operator, 'is');
+      t.equal(result.failures[0].name, 'should be strict equal');
+      t.equal(result.failures[1].diag.operator, 'not');
+      t.equal(result.failures[1].name, 'should not be strict equal');
+      t.equal(result.failures[2].diag.operator, 'is');
+      t.equal(result.failures[2].name, 'foo');
+      t.equal(result.failures[3].diag.operator, 'not');
+      t.equal(result.failures[3].name, 'bar');
       t.notOk(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.fail, 2);
+      t.equal(result.count, 4);
+      t.equal(result.fail, 4);
+      t.end();
     }
   );
 });
 
 tape('t.deepEqual() / t.notDeepEqual()', t => {
-  t.plan(6);
-
   runTest(
     tt => {
       tt.deepEqual({foo: true}, {foo: true});
@@ -285,18 +318,32 @@ tape('t.deepEqual() / t.notDeepEqual()', t => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
+      t.end();
     }
   );
+});
 
+tape('t.deepEqual() / t.notDeepEqual() failing', t => {
   runTest(
     tt => {
       tt.deepEqual({foo: true}, {foo: false});
       tt.notDeepEqual({foo: true}, {foo: true});
+      tt.deepEqual({foo: true}, {foo: false}, 'foo');
+      tt.notDeepEqual({foo: true}, {foo: true}, 'bar');
     },
     result => {
+      t.equal(result.failures[0].diag.operator, 'deepEqual');
+      t.equal(result.failures[0].name, 'should be deep equal');
+      t.equal(result.failures[1].diag.operator, 'notDeepEqual');
+      t.equal(result.failures[1].name, 'should not be deep equal');
+      t.equal(result.failures[2].diag.operator, 'deepEqual');
+      t.equal(result.failures[2].name, 'foo');
+      t.equal(result.failures[3].diag.operator, 'notDeepEqual');
+      t.equal(result.failures[3].name, 'bar');
       t.notOk(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.fail, 2);
+      t.equal(result.count, 4);
+      t.equal(result.fail, 4);
+      t.end();
     }
   );
 });
