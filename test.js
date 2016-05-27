@@ -345,6 +345,7 @@ tape('t.throws / t.notThrows with promises', t => {
 
   runTest(
     function * (tt) {
+      tt.plan(2);
       yield tt.throws(Promise.reject(new Error('beep boop')));
       yield tt.notThrows(Promise.resolve());
     },
@@ -357,6 +358,7 @@ tape('t.throws / t.notThrows with promises', t => {
 
   runTest(
     function * (tt) {
+      tt.plan(2);
       yield tt.throws(Promise.resolve());
       yield tt.notThrows(Promise.reject(new Error('beep boop')));
     },
