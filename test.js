@@ -1,4 +1,4 @@
-import tape from 'tape-catch';
+import tape from 'tape';
 import tapava from './lib';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
@@ -38,6 +38,22 @@ tape('throwing is failing', t => {
       t.end();
     }
   );
+});
+
+tape('throwing is failing in callback mode', t => {
+  const test = tapava.cb.createHarness();
+
+  test(function (tt) {
+    throw new Error('Foo bar');
+  });
+
+  testToResult(test, result => {
+    t.notOk(result.ok);
+    t.is(result.fail, 1);
+    t.is(result.count, 1);
+    t.is(result.failures[0].name, 'Error: Foo bar');
+    t.end();
+  });
 });
 
 tape('simple .pass()', t => {
@@ -181,6 +197,7 @@ tape('t.truthy() / t.falsy()', t => {
       tt.falsy(0);
     },
     result => {
+      console.log('result', result);
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
