@@ -30,7 +30,7 @@
     "bluebird": "^3.4.0",
     "browserify": "^13.0.1",
     "concat-stream": "^1.5.1",
-    "devtool": "^1.11.2",
+    "devtool": "^2.0.2",
     "faucet": "0.0.1",
     "nyc": "^6.4.4",
     "semistandard": "^8.0.0",
