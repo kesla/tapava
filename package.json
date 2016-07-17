@@ -13,7 +13,6 @@
   "author": "David Björklund <david.bjorklund@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "babel-polyfill": "^6.9.0",
     "co": "^4.6.0",
     "deep-equal": "^1.0.1",
     "is-generator": "^1.0.3",
