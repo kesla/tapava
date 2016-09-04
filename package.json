@@ -4,7 +4,7 @@
   "description": "the syntax of ava, run through tape",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "semistandard | snazzy",
+    "lint": "xo",
     "test:browser": "browserify test.js -t babelify -d | devtool -c -h --bf --no-nt | faucet",
     "test:node": "nyc babel-node test.js | faucet",
     "test": "npm run test:node && npm run test:browser && npm run lint",
@@ -32,9 +32,8 @@
     "devtool": "^2.0.2",
     "faucet": "0.0.1",
     "nyc": "^7.0.0",
-    "semistandard": "^8.0.0",
-    "snazzy": "^4.0.0",
-    "tap-parser": "^1.2.2"
+    "tap-parser": "^1.2.2",
+    "xo": "^0.16.0"
   },
   "keywords": [
     "ava",
@@ -47,5 +46,9 @@
   "bugs": {
     "url": "https://github.com/kesla/tapava/issues"
   },
-  "homepage": "https://github.com/kesla/tapava#readme"
+  "homepage": "https://github.com/kesla/tapava#readme",
+  "xo": {
+    "esnext": true,
+    "space": true
+  }
 }

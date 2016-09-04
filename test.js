@@ -1,8 +1,12 @@
 import tape from 'tape';
-import tapava from './lib';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
 import Promise from 'bluebird';
+
+import tapava from './lib';
+
+const testToResult = (test, onResult) =>
+  test.createStream().pipe(parser(onResult));
 
 const runTest = (fn, onResult) => {
   const test = tapava.createHarness();
@@ -10,15 +14,12 @@ const runTest = (fn, onResult) => {
   testToResult(test, onResult);
 };
 
-const testToResult = (test, onResult) =>
-  test.createStream().pipe(parser(onResult));
-
 const testToString = (test, onString) =>
   test.createStream().pipe(concat({encoding: 'string'}, onString));
 
 tape('title', t => {
   const test = tapava.createHarness();
-  test('the message', tt => {});
+  test('the message', () => {});
   testToString(test, string => {
     t.is(string.split('\n')[1], '# the message');
     t.end();
@@ -27,7 +28,7 @@ tape('title', t => {
 
 tape('throwing is failing', t => {
   runTest(
-    tt => {
+    () => {
       throw new Error('Foo bar');
     },
     result => {
@@ -43,7 +44,7 @@ tape('throwing is failing', t => {
 tape('throwing is failing in callback mode', t => {
   const test = tapava.cb.createHarness();
 
-  test(function (tt) {
+  test(() => {
     throw new Error('Foo bar');
   });
 
@@ -100,8 +101,8 @@ tape('promises', t => {
 
 tape('promises, errors', t => {
   runTest(
-    tt => {
-      return new Promise(resolve => {
+    () => {
+      return new Promise(() => {
         throw new Error('Heya');
       });
     },
@@ -136,8 +137,8 @@ tape('generator', t => {
 
 tape('only', t => {
   const test = tapava.createHarness();
-  test('test1', tt => {});
-  test.only('test2', tt => {});
+  test('test1', () => {});
+  test.only('test2', () => {});
   testToString(test, string => {
     t.is(string.split('\n')[1], '# test2');
     t.end();
@@ -146,7 +147,7 @@ tape('only', t => {
 
 tape('skip', t => {
   const test = tapava.createHarness();
-  test.skip('this should not be run', tt => {
+  test.skip('this should not be run', () => {
     t.fail('wtf');
   });
   testToResult(test, result => {
@@ -381,7 +382,9 @@ tape('t.throws / t.notThrows with functions', t => {
 
   runTest(
     tt => {
-      tt.throws(() => { throw new Error('beep boop'); });
+      tt.throws(() => {
+        throw new Error('beep boop');
+      });
       tt.notThrows(() => {});
     },
     result => {
@@ -394,7 +397,9 @@ tape('t.throws / t.notThrows with functions', t => {
   runTest(
     tt => {
       tt.throws(() => {});
-      tt.notThrows(() => { throw new Error('beep boop'); });
+      tt.notThrows(() => {
+        throw new Error('beep boop');
+      });
     },
     result => {
       t.notOk(result.ok);
@@ -451,7 +456,7 @@ tape('t.end() is not allowed', t => {
 tape('callback mode', t => {
   const test = tapava.cb.createHarness();
 
-  test(function (tt) {
+  test(tt => {
     // tt.ok should not be defined since that's a tape method
     // and not a tapava method
     tt.pass('yes!');
@@ -468,5 +473,5 @@ tape('callback mode', t => {
 });
 
 if (process.browser) {
-  tape.onFinish(window.close);
+  tape.onFinish(global.close);
 }
