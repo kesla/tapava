@@ -31,8 +31,8 @@
     "concat-stream": "^1.5.1",
     "devtool": "^2.0.2",
     "faucet": "0.0.1",
-    "nyc": "^7.0.0",
-    "tap-parser": "^1.2.2",
+    "nyc": "^8.1.0",
+    "tap-parser": "^2.0.0",
     "xo": "^0.16.0"
   },
   "keywords": [
