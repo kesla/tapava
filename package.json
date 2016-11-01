@@ -19,7 +19,7 @@
     "is-generator": "^1.0.3",
     "is-promise": "^2.1.0",
     "tape": "^4.5.1",
-    "tmatch": "^2.0.1"
+    "tmatch": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
