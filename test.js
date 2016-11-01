@@ -1,3 +1,4 @@
+/* eslint-disable import/default */
 import tape from 'tape';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
