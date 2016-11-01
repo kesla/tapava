@@ -30,6 +30,7 @@
     "browserify": "^13.0.1",
     "concat-stream": "^1.5.1",
     "devtool": "^2.0.2",
+    "fast-async": "^6.1.2",
     "faucet": "0.0.1",
     "nyc": "^8.1.0",
     "tap-parser": "^3.0.2",

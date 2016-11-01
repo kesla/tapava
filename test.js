@@ -117,9 +117,9 @@ tape('promises, errors', t => {
 
 tape('generator', t => {
   runTest(
-    function * (tt) {
+    async tt => {
       tt.pass('first');
-      yield new Promise(resolve => {
+      await new Promise(resolve => {
         setImmediate(() => {
           tt.pass('bling bling');
           resolve();
@@ -413,10 +413,10 @@ tape('t.throws / t.notThrows with promises', t => {
   t.plan(6);
 
   runTest(
-    function * (tt) {
+    async tt => {
       tt.plan(2);
-      yield tt.throws(Promise.reject(new Error('beep boop')));
-      yield tt.notThrows(Promise.resolve());
+      await tt.throws(Promise.reject(new Error('beep boop')));
+      await tt.notThrows(Promise.resolve());
     },
     result => {
       t.ok(result.ok);
@@ -426,10 +426,10 @@ tape('t.throws / t.notThrows with promises', t => {
   );
 
   runTest(
-    function * (tt) {
+    async tt => {
       tt.plan(2);
-      yield tt.throws(Promise.resolve());
-      yield tt.notThrows(Promise.reject(new Error('beep boop')));
+      await tt.throws(Promise.resolve());
+      await tt.notThrows(Promise.reject(new Error('beep boop')));
     },
     result => {
       t.notOk(result.ok);
