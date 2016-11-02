@@ -1,6 +1,6 @@
 {
   "name": "tapava",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "the syntax of ava, run through tape",
   "main": "dist/index.js",
   "scripts": {
