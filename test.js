@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies, no-param-reassign */
 
 import tape from 'tape';
 import parser from 'tap-parser';
@@ -468,6 +468,41 @@ tape('callback mode', (t) => {
     t.equal(result.pass, 1);
     t.end();
   });
+});
+
+tape('custom assertion', (t) => {
+  t.plan(7);
+
+  const createCustom = tt => ({ foo }, message) => tt.custom(foo === 'bar', {
+    operator: 'foo', actual: foo, expected: 'bar', message
+  });
+
+  runTest(
+    (tt) => {
+      tt.foo = createCustom(tt);
+      t.ok(tt.custom);
+
+      tt.foo({ foo: 'bar' });
+    },
+    (result) => {
+      t.ok(result.ok);
+      t.equal(result.count, 1);
+      t.equal(result.pass, 1);
+    }
+  );
+
+  runTest(
+    (tt) => {
+      tt.foo = createCustom(tt);
+
+      tt.foo({ foo: 'bas' });
+    },
+    (result) => {
+      t.notOk(result.ok);
+      t.equal(result.count, 1);
+      t.equal(result.fail, 1);
+    }
+  );
 });
 
 if (process.browser) {
