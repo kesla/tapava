@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 import tape from 'tape';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
@@ -15,23 +17,23 @@ const runTest = (fn, onResult) => {
 };
 
 const testToString = (test, onString) =>
-  test.createStream().pipe(concat({encoding: 'string'}, onString));
+  test.createStream().pipe(concat({ encoding: 'string' }, onString));
 
-tape('title', t => {
+tape('title', (t) => {
   const test = tapava.createHarness();
   test('the message', () => {});
-  testToString(test, string => {
+  testToString(test, (string) => {
     t.is(string.split('\n')[1], '# the message');
     t.end();
   });
 });
 
-tape('throwing is failing', t => {
+tape('throwing is failing', (t) => {
   runTest(
     () => {
       throw new Error('Foo bar');
     },
-    result => {
+    (result) => {
       t.notOk(result.ok);
       t.is(result.fail, 1);
       t.is(result.count, 1);
@@ -41,14 +43,14 @@ tape('throwing is failing', t => {
   );
 });
 
-tape('throwing is failing in callback mode', t => {
+tape('throwing is failing in callback mode', (t) => {
   const test = tapava.cb.createHarness();
 
   test(() => {
     throw new Error('Foo bar');
   });
 
-  testToResult(test, result => {
+  testToResult(test, (result) => {
     t.notOk(result.ok);
     t.is(result.fail, 1);
     t.is(result.count, 1);
@@ -57,14 +59,14 @@ tape('throwing is failing in callback mode', t => {
   });
 });
 
-tape('simple .pass()', t => {
+tape('simple .pass()', (t) => {
   const test = tapava.createHarness();
 
-  test(tt => {
+  test((tt) => {
     tt.pass('pass');
   });
 
-  const p = parser(result => {
+  const p = parser((result) => {
     t.ok(result.ok);
     t.is(result.pass, 1);
     t.is(result.count, 1);
@@ -78,19 +80,17 @@ tape('simple .pass()', t => {
   });
 });
 
-tape('promises', t => {
+tape('promises', (t) => {
   let isAsync = false;
   runTest(
-    tt => {
-      return new Promise(resolve => {
-        tt.pass('blip blop');
-        setImmediate(() => {
-          isAsync = true;
-          resolve();
-        });
+    tt => new Promise((resolve) => {
+      tt.pass('blip blop');
+      setImmediate(() => {
+        isAsync = true;
+        resolve();
       });
-    },
-    result => {
+    }),
+    (result) => {
       t.ok(isAsync);
       t.equal(result.count, 1);
       t.equal(result.pass, 1);
@@ -99,14 +99,12 @@ tape('promises', t => {
   );
 });
 
-tape('promises, errors', t => {
+tape('promises, errors', (t) => {
   runTest(
-    () => {
-      return new Promise(() => {
-        throw new Error('Heya');
-      });
-    },
-    result => {
+    () => new Promise(() => {
+      throw new Error('Heya');
+    }),
+    (result) => {
       t.notOk(result.ok);
       t.equal(result.count, 1);
       t.equal(result.fail, 1);
@@ -115,18 +113,18 @@ tape('promises, errors', t => {
   );
 });
 
-tape('generator', t => {
+tape('generator', (t) => {
   runTest(
-    async tt => {
+    async (tt) => {
       tt.pass('first');
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         setImmediate(() => {
           tt.pass('bling bling');
           resolve();
         });
       });
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -135,36 +133,36 @@ tape('generator', t => {
   );
 });
 
-tape('only', t => {
+tape('only', (t) => {
   const test = tapava.createHarness();
   test('test1', () => {});
   test.only('test2', () => {});
-  testToString(test, string => {
+  testToString(test, (string) => {
     t.is(string.split('\n')[1], '# test2');
     t.end();
   });
 });
 
-tape('skip', t => {
+tape('skip', (t) => {
   const test = tapava.createHarness();
   test.skip('this should not be run', () => {
     t.fail('wtf');
   });
-  testToResult(test, result => {
+  testToResult(test, (result) => {
     t.ok(result.ok);
     t.equal(result.count, 0);
     t.end();
   });
 });
 
-tape('t.plan()', t => {
+tape('t.plan()', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.plan(2);
       tt.pass('passing!');
       tt.pass('passing2');
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -173,13 +171,13 @@ tape('t.plan()', t => {
   );
 });
 
-tape('t.pass() / t.fail()', t => {
+tape('t.pass() / t.fail()', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.pass('passing!');
       tt.fail('noes');
     },
-    result => {
+    (result) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 1);
@@ -189,13 +187,13 @@ tape('t.pass() / t.fail()', t => {
   );
 });
 
-tape('t.truthy() / t.falsy() passing', t => {
+tape('t.truthy() / t.falsy() passing', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.truthy(1);
       tt.falsy(0);
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -204,15 +202,15 @@ tape('t.truthy() / t.falsy() passing', t => {
   );
 });
 
-tape('t.truthy() / t.falsy() failing', t => {
+tape('t.truthy() / t.falsy() failing', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.truthy(0);
       tt.falsy(1);
       tt.truthy(0, 'foo');
       tt.falsy(1, 'bar');
     },
-    result => {
+    (result) => {
       t.equal(result.failures[0].diag.operator, 'truthy');
       t.equal(result.failures[0].name, 'should be truthy');
       t.equal(result.failures[1].diag.operator, 'falsy');
@@ -229,13 +227,13 @@ tape('t.truthy() / t.falsy() failing', t => {
   );
 });
 
-tape('t.true() / t.false()', t => {
+tape('t.true() / t.false()', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.true(true);
       tt.false(false);
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -244,15 +242,15 @@ tape('t.true() / t.false()', t => {
   );
 });
 
-tape('t.true() / t.false() failing', t => {
+tape('t.true() / t.false() failing', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.true(1);
       tt.false(0);
       tt.true(1, 'foo');
       tt.false(0, 'bar');
     },
-    result => {
+    (result) => {
       t.equal(result.failures[0].diag.operator, true);
       t.equal(result.failures[0].name, 'should be true');
       t.equal(result.failures[1].diag.operator, false);
@@ -269,13 +267,13 @@ tape('t.true() / t.false() failing', t => {
   );
 });
 
-tape('t.is() / t.not()', t => {
+tape('t.is() / t.not()', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.is(1, 1);
       tt.not(1, '1');
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -284,15 +282,15 @@ tape('t.is() / t.not()', t => {
   );
 });
 
-tape('t.is() / t.not() failing', t => {
+tape('t.is() / t.not() failing', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.is(1, '1');
       tt.not(1, 1);
       tt.is(1, '1', 'foo');
       tt.not(1, 1, 'bar');
     },
-    result => {
+    (result) => {
       t.equal(result.failures[0].diag.operator, 'is');
       t.equal(result.failures[0].name, 'should be strict equal');
       t.equal(result.failures[1].diag.operator, 'not');
@@ -309,13 +307,13 @@ tape('t.is() / t.not() failing', t => {
   );
 });
 
-tape('t.deepEqual() / t.notDeepEqual()', t => {
+tape('t.deepEqual() / t.notDeepEqual()', (t) => {
   runTest(
-    tt => {
-      tt.deepEqual({foo: true}, {foo: true});
-      tt.notDeepEqual({foo: true}, {foo: false});
+    (tt) => {
+      tt.deepEqual({ foo: true }, { foo: true });
+      tt.notDeepEqual({ foo: true }, { foo: false });
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -324,15 +322,15 @@ tape('t.deepEqual() / t.notDeepEqual()', t => {
   );
 });
 
-tape('t.deepEqual() / t.notDeepEqual() failing', t => {
+tape('t.deepEqual() / t.notDeepEqual() failing', (t) => {
   runTest(
-    tt => {
-      tt.deepEqual({foo: true}, {foo: false});
-      tt.notDeepEqual({foo: true}, {foo: true});
-      tt.deepEqual({foo: true}, {foo: false}, 'foo');
-      tt.notDeepEqual({foo: true}, {foo: true}, 'bar');
+    (tt) => {
+      tt.deepEqual({ foo: true }, { foo: false });
+      tt.notDeepEqual({ foo: true }, { foo: true });
+      tt.deepEqual({ foo: true }, { foo: false }, 'foo');
+      tt.notDeepEqual({ foo: true }, { foo: true }, 'bar');
     },
-    result => {
+    (result) => {
       t.equal(result.failures[0].diag.operator, 'deepEqual');
       t.equal(result.failures[0].name, 'should be deep equal');
       t.equal(result.failures[1].diag.operator, 'notDeepEqual');
@@ -349,15 +347,15 @@ tape('t.deepEqual() / t.notDeepEqual() failing', t => {
   );
 });
 
-tape('t.match() / t.notMatch()', t => {
+tape('t.match() / t.notMatch()', (t) => {
   t.plan(6);
 
   runTest(
-    tt => {
-      tt.match({foo: true, beep: 'boop'}, {foo: true});
-      tt.notMatch({foo: true, beep: 'boop'}, {foo: false});
+    (tt) => {
+      tt.match({ foo: true, beep: 'boop' }, { foo: true });
+      tt.notMatch({ foo: true, beep: 'boop' }, { foo: false });
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -365,11 +363,11 @@ tape('t.match() / t.notMatch()', t => {
   );
 
   runTest(
-    tt => {
-      tt.match({foo: true, beep: 'boop'}, {foo: false});
-      tt.notMatch({foo: true, beep: 'boop'}, {foo: true});
+    (tt) => {
+      tt.match({ foo: true, beep: 'boop' }, { foo: false });
+      tt.notMatch({ foo: true, beep: 'boop' }, { foo: true });
     },
-    result => {
+    (result) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
@@ -377,17 +375,17 @@ tape('t.match() / t.notMatch()', t => {
   );
 });
 
-tape('t.throws / t.notThrows with functions', t => {
+tape('t.throws / t.notThrows with functions', (t) => {
   t.plan(6);
 
   runTest(
-    tt => {
+    (tt) => {
       tt.throws(() => {
         throw new Error('beep boop');
       });
       tt.notThrows(() => {});
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -395,13 +393,13 @@ tape('t.throws / t.notThrows with functions', t => {
   );
 
   runTest(
-    tt => {
+    (tt) => {
       tt.throws(() => {});
       tt.notThrows(() => {
         throw new Error('beep boop');
       });
     },
-    result => {
+    (result) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
@@ -409,16 +407,16 @@ tape('t.throws / t.notThrows with functions', t => {
   );
 });
 
-tape('t.throws / t.notThrows with promises', t => {
+tape('t.throws / t.notThrows with promises', (t) => {
   t.plan(6);
 
   runTest(
-    async tt => {
+    async (tt) => {
       tt.plan(2);
       await tt.throws(Promise.reject(new Error('beep boop')));
       await tt.notThrows(Promise.resolve());
     },
-    result => {
+    (result) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
@@ -426,12 +424,12 @@ tape('t.throws / t.notThrows with promises', t => {
   );
 
   runTest(
-    async tt => {
+    async (tt) => {
       tt.plan(2);
       await tt.throws(Promise.resolve());
       await tt.notThrows(Promise.reject(new Error('beep boop')));
     },
-    result => {
+    (result) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
@@ -439,12 +437,12 @@ tape('t.throws / t.notThrows with promises', t => {
   );
 });
 
-tape('t.end() is not allowed', t => {
+tape('t.end() is not allowed', (t) => {
   runTest(
-    tt => {
+    (tt) => {
       tt.end();
     },
-    result => {
+    (result) => {
       t.notOk(result.ok);
       t.equal(result.count, 1);
       t.equal(result.fail, 1);
@@ -453,10 +451,10 @@ tape('t.end() is not allowed', t => {
   );
 });
 
-tape('callback mode', t => {
+tape('callback mode', (t) => {
   const test = tapava.cb.createHarness();
 
-  test(tt => {
+  test((tt) => {
     // tt.ok should not be defined since that's a tape method
     // and not a tapava method
     tt.pass('yes!');
@@ -464,7 +462,7 @@ tape('callback mode', t => {
     tt.end();
   });
 
-  testToResult(test, result => {
+  testToResult(test, (result) => {
     t.ok(result.ok);
     t.equal(result.count, 1);
     t.equal(result.pass, 1);

@@ -4,7 +4,7 @@
   "description": "the syntax of ava, run through tape",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "xo",
+    "lint": "miclint | snazzy",
     "test:browser": "browserify test.js -t babelify -d | devtool -c -h --bf --no-nt | faucet",
     "test:node": "nyc babel-node test.js | faucet",
     "test": "npm run test:node && npm run test:browser && npm run lint",
@@ -32,9 +32,10 @@
     "devtool": "^2.0.2",
     "fast-async": "^6.1.2",
     "faucet": "0.0.1",
+    "miclint": "^2.0.0",
     "nyc": "^8.1.0",
-    "tap-parser": "^3.0.2",
-    "xo": "^0.16.0"
+    "snazzy": "^5.0.0",
+    "tap-parser": "^3.0.2"
   },
   "keywords": [
     "ava",
