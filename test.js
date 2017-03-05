@@ -144,7 +144,6 @@ tape('only', (t) => {
   });
 });
 
-/*
 tape('skip', (t) => {
   const test = tapava.createHarness();
   test.skip('this should not be run', () => {
@@ -157,6 +156,7 @@ tape('skip', (t) => {
   });
 });
 
+/*
 tape('t.plan()', (t) => {
   runTest(
     (tt) => {
