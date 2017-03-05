@@ -8,23 +8,22 @@
     "test:browser": "browserify test.js -t babelify -d | devtool -c -h --bf --no-nt | faucet",
     "test:node": "nyc babel-node test.js | faucet",
     "test": "npm run flow && npm run test:node && npm run test:browser && npm run lint",
-    "prepublish": "mkdir -p dist && babel lib --out-dir dist",
+    "prepublish": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
     "flow": "flow"
   },
   "author": "David Björklund <david.bjorklund@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
     "deep-equal": "^1.0.1",
     "is-promise": "^2.1.0",
     "js-yaml": "^3.8.2",
     "object-inspect": "^1.2.1",
-    "tape": "^4.5.1",
     "tmatch": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
     "babel-core": "^6.9.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babelify": "^7.3.0",
     "browserify": "^13.0.1",
@@ -36,7 +35,8 @@
     "miclint": "^4.1.1",
     "nyc": "^8.1.0",
     "snazzy": "^5.0.0",
-    "tap-parser": "^3.0.2"
+    "tap-parser": "^3.0.2",
+    "tape": "^4.5.1"
   },
   "keywords": [
     "ava",
