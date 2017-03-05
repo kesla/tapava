@@ -438,7 +438,6 @@ tape('t.throws / t.notThrows with promises', (t) => {
   );
 });
 
-/*
 tape('t.end() is not allowed', (t) => {
   runTest(
     (tt) => {
@@ -453,6 +452,7 @@ tape('t.end() is not allowed', (t) => {
   );
 });
 
+/*
 tape('callback mode', (t) => {
   const test = tapava.cb.createHarness();
 
