@@ -130,10 +130,9 @@ tape('multiple', (t) => {
     t.is(rows[rows.length - 3], '# tests 2');
     t.is(rows[rows.length - 2], '# pass 2');
     t.is(rows[rows.length - 1], '# fail 0');
+    t.end();
   });
 });
-
-/*
 
 tape('only', (t) => {
   const test = tapava.createHarness();
@@ -145,6 +144,7 @@ tape('only', (t) => {
   });
 });
 
+/*
 tape('skip', (t) => {
   const test = tapava.createHarness();
   test.skip('this should not be run', () => {
