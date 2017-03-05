@@ -156,7 +156,6 @@ tape('skip', (t) => {
   });
 });
 
-/*
 tape('t.plan()', (t) => {
   runTest(
     (tt) => {
@@ -173,6 +172,25 @@ tape('t.plan()', (t) => {
   );
 });
 
+tape('t.plan(), failing', (t) => {
+  runTest(
+    (tt) => {
+      tt.plan(3);
+      tt.pass('passing!');
+      tt.pass('passing2');
+    },
+    (result) => {
+      t.notOk(result.ok);
+      t.equal(result.count, 3);
+      t.equal(result.pass, 2);
+      t.equal(result.fail, 1);
+      t.end();
+    },
+  );
+});
+
+
+/*
 tape('t.truthy() / t.falsy() passing', (t) => {
   runTest(
     (tt) => {
