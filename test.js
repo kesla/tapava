@@ -46,44 +46,42 @@ tape('throwing is failing', (t) => {
   );
 });
 
-/*
-tape('throwing is failing in callback mode', (t) => {
-  const test = tapava.cb.createHarness();
-
-  test(() => {
-    throw new Error('Foo bar');
-  });
-
-  testToResult(test, (result) => {
-    t.notOk(result.ok);
-    t.is(result.fail, 1);
-    t.is(result.count, 1);
-    t.is(result.failures[0].name, 'Error: Foo bar');
-    t.end();
-  });
-});
-
 tape('simple .pass()', (t) => {
   const test = tapava.createHarness();
 
-  test((tt) => {
+  test('', (tt) => {
     tt.pass('pass');
   });
 
   const p = parser((result) => {
     t.ok(result.ok);
+    t.is(result.fail, 0);
     t.is(result.pass, 1);
     t.is(result.count, 1);
     t.end();
   });
 
-  const s = test.createStream();
-  s.pipe(p);
-  setImmediate(() => {
-    s.end();
-  });
+  test.createStream().pipe(p);
 });
 
+
+tape('t.pass() / t.fail()', (t) => {
+  runTest(
+    (tt) => {
+      tt.pass('passing!');
+      tt.fail('noes');
+    },
+    (result) => {
+      t.notOk(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.pass, 1);
+      t.equal(result.fail, 1);
+      t.end();
+    },
+  );
+});
+
+/*
 tape('promises', (t) => {
   let isAsync = false;
   runTest(
@@ -170,22 +168,6 @@ tape('t.plan()', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
-      t.end();
-    },
-  );
-});
-
-tape('t.pass() / t.fail()', (t) => {
-  runTest(
-    (tt) => {
-      tt.pass('passing!');
-      tt.fail('noes');
-    },
-    (result) => {
-      t.notOk(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.pass, 1);
-      t.equal(result.fail, 1);
       t.end();
     },
   );
@@ -470,6 +452,22 @@ tape('callback mode', (t) => {
     t.ok(result.ok);
     t.equal(result.count, 1);
     t.equal(result.pass, 1);
+    t.end();
+  });
+});
+
+tape('throwing is failing in callback mode', (t) => {
+  const test = tapava.cb.createHarness();
+
+  test(() => {
+    throw new Error('Foo bar');
+  });
+
+  testToResult(test, (result) => {
+    t.notOk(result.ok);
+    t.is(result.fail, 1);
+    t.is(result.count, 1);
+    t.is(result.failures[0].name, 'Error: Foo bar');
     t.end();
   });
 });
