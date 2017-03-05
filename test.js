@@ -269,7 +269,6 @@ tape('t.true() / t.false() failing', (t) => {
   );
 });
 
-/*
 tape('t.is() / t.not()', (t) => {
   runTest(
     (tt) => {
@@ -309,7 +308,7 @@ tape('t.is() / t.not() failing', (t) => {
     },
   );
 });
-
+/*
 tape('t.deepEqual() / t.notDeepEqual()', (t) => {
   runTest(
     (tt) => {
