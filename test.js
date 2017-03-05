@@ -4,14 +4,13 @@
 import tape from 'tape';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
-import type { Readable } from 'stream';
 
 import tapava from './lib';
 
 const testToResult = (test, onResult) => {
   const stream = test.createStream();
   stream.pipe(parser(onResult));
-}
+};
 
 const runTest = (fn, onResult) => {
   const test = tapava.createHarness();
@@ -116,11 +115,11 @@ tape('promises, errors', (t) => {
 
 tape('multiple', (t) => {
   const test = tapava.createHarness();
-  test('test1', (t) => {
-    t.pass('test1');
+  test('test1', (tt) => {
+    tt.pass('test1');
   });
-  test('test2', async (t) => {
-    t.pass('test2');
+  test('test2', async (tt) => {
+    tt.pass('test2');
   });
 
   testToString(test, (string) => {

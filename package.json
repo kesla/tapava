@@ -4,7 +4,7 @@
   "description": "the syntax of ava, run through tape",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "miclint | snazzy",
+    "lint": "miclint --flow | snazzy",
     "test:browser": "browserify test.js -t babelify -d | devtool -c -h --bf --no-nt | faucet",
     "test:node": "nyc babel-node test.js | faucet",
     "test": "npm run flow && npm run test:node && npm run test:browser && npm run lint",
