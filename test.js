@@ -189,8 +189,6 @@ tape('t.plan(), failing', (t) => {
   );
 });
 
-
-/*
 tape('t.truthy() / t.falsy() passing', (t) => {
   runTest(
     (tt) => {
@@ -255,22 +253,23 @@ tape('t.true() / t.false() failing', (t) => {
       tt.false(0, 'bar');
     },
     (result) => {
-      t.equal(result.failures[0].diag.operator, true);
-      t.equal(result.failures[0].name, 'should be true');
-      t.equal(result.failures[1].diag.operator, false);
-      t.equal(result.failures[1].name, 'should be false');
-      t.equal(result.failures[2].diag.operator, true);
-      t.equal(result.failures[2].name, 'foo');
-      t.equal(result.failures[3].diag.operator, false);
-      t.equal(result.failures[3].name, 'bar');
+      t.is(result.failures[0].diag.operator, 'true');
+      t.is(result.failures[0].name, 'should be true');
+      t.is(result.failures[1].diag.operator, 'false');
+      t.is(result.failures[1].name, 'should be false');
+      t.is(result.failures[2].diag.operator, 'true');
+      t.is(result.failures[2].name, 'foo');
+      t.is(result.failures[3].diag.operator, 'false');
+      t.is(result.failures[3].name, 'bar');
       t.notOk(result.ok);
-      t.equal(result.count, 4);
-      t.equal(result.fail, 4);
+      t.is(result.count, 4);
+      t.is(result.fail, 4);
       t.end();
     },
   );
 });
 
+/*
 tape('t.is() / t.not()', (t) => {
   runTest(
     (tt) => {
