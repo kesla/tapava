@@ -408,7 +408,6 @@ tape('t.throws / t.notThrows with functions', (t) => {
   );
 });
 
-/*
 tape('t.throws / t.notThrows with promises', (t) => {
   t.plan(6);
 
