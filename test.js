@@ -376,7 +376,6 @@ tape('t.match() / t.notMatch()', (t) => {
   );
 });
 
-/*
 tape('t.throws / t.notThrows with functions', (t) => {
   t.plan(6);
 
@@ -409,6 +408,7 @@ tape('t.throws / t.notThrows with functions', (t) => {
   );
 });
 
+/*
 tape('t.throws / t.notThrows with promises', (t) => {
   t.plan(6);
 
@@ -439,6 +439,7 @@ tape('t.throws / t.notThrows with promises', (t) => {
   );
 });
 
+/*
 tape('t.end() is not allowed', (t) => {
   runTest(
     (tt) => {
