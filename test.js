@@ -113,26 +113,27 @@ tape('promises, errors', (t) => {
     },
   );
 });
-/*
-tape('generator', (t) => {
-  runTest(
-    async (tt) => {
-      tt.pass('first');
-      await new Promise((resolve) => {
-        setImmediate(() => {
-          tt.pass('bling bling');
-          resolve();
-        });
-      });
-    },
-    (result) => {
-      t.ok(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.pass, 2);
-      t.end();
-    },
-  );
+
+tape('multiple', (t) => {
+  const test = tapava.createHarness();
+  test('test1', (t) => {
+    t.pass('test1');
+  });
+  test('test2', async (t) => {
+    t.pass('test2');
+  });
+
+  testToString(test, (string) => {
+    const rows = string.trim().split('\n');
+    t.is(rows[1], '# test1');
+    t.is(rows[3], '# test2');
+    t.is(rows[rows.length - 3], '# tests 2');
+    t.is(rows[rows.length - 2], '# pass 2');
+    t.is(rows[rows.length - 1], '# fail 0');
+  });
 });
+
+/*
 
 tape('only', (t) => {
   const test = tapava.createHarness();
