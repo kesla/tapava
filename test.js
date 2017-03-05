@@ -39,7 +39,7 @@ tape('throwing is failing', (t) => {
       t.is(result.count, 1);
       t.is(result.failures[0].name, 'Error: Foo bar');
       t.end();
-    }
+    },
   );
 });
 
@@ -95,7 +95,7 @@ tape('promises', (t) => {
       t.equal(result.count, 1);
       t.equal(result.pass, 1);
       t.end();
-    }
+    },
   );
 });
 
@@ -109,7 +109,7 @@ tape('promises, errors', (t) => {
       t.equal(result.count, 1);
       t.equal(result.fail, 1);
       t.end();
-    }
+    },
   );
 });
 
@@ -129,7 +129,7 @@ tape('generator', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -167,7 +167,7 @@ tape('t.plan()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -183,7 +183,7 @@ tape('t.pass() / t.fail()', (t) => {
       t.equal(result.pass, 1);
       t.equal(result.fail, 1);
       t.end();
-    }
+    },
   );
 });
 
@@ -198,7 +198,7 @@ tape('t.truthy() / t.falsy() passing', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -223,7 +223,7 @@ tape('t.truthy() / t.falsy() failing', (t) => {
       t.equal(result.count, 4);
       t.equal(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -238,7 +238,7 @@ tape('t.true() / t.false()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -263,7 +263,7 @@ tape('t.true() / t.false() failing', (t) => {
       t.equal(result.count, 4);
       t.equal(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -278,7 +278,7 @@ tape('t.is() / t.not()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -303,7 +303,7 @@ tape('t.is() / t.not() failing', (t) => {
       t.equal(result.count, 4);
       t.equal(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -318,7 +318,7 @@ tape('t.deepEqual() / t.notDeepEqual()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -343,7 +343,7 @@ tape('t.deepEqual() / t.notDeepEqual() failing', (t) => {
       t.equal(result.count, 4);
       t.equal(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -359,7 +359,7 @@ tape('t.match() / t.notMatch()', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
-    }
+    },
   );
 
   runTest(
@@ -371,7 +371,7 @@ tape('t.match() / t.notMatch()', (t) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
-    }
+    },
   );
 });
 
@@ -389,7 +389,7 @@ tape('t.throws / t.notThrows with functions', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
-    }
+    },
   );
 
   runTest(
@@ -403,7 +403,7 @@ tape('t.throws / t.notThrows with functions', (t) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
-    }
+    },
   );
 });
 
@@ -420,7 +420,7 @@ tape('t.throws / t.notThrows with promises', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
-    }
+    },
   );
 
   runTest(
@@ -433,7 +433,7 @@ tape('t.throws / t.notThrows with promises', (t) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
-    }
+    },
   );
 });
 
@@ -447,7 +447,7 @@ tape('t.end() is not allowed', (t) => {
       t.equal(result.count, 1);
       t.equal(result.fail, 1);
       t.end();
-    }
+    },
   );
 });
 
@@ -474,7 +474,7 @@ tape('custom assertion', (t) => {
   t.plan(7);
 
   const createCustom = tt => ({ foo }, message) => tt.custom(foo === 'bar', {
-    operator: 'foo', actual: foo, expected: 'bar', message
+    operator: 'foo', actual: foo, expected: 'bar', message,
   });
 
   runTest(
@@ -488,7 +488,7 @@ tape('custom assertion', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 1);
       t.equal(result.pass, 1);
-    }
+    },
   );
 
   runTest(
@@ -501,7 +501,7 @@ tape('custom assertion', (t) => {
       t.notOk(result.ok);
       t.equal(result.count, 1);
       t.equal(result.fail, 1);
-    }
+    },
   );
 });
 
