@@ -8,16 +8,16 @@ import type { Readable } from 'stream';
 
 import tapava from './lib';
 
-/*
-const testToResult = (test, onResult) =>
-  test.createStream().pipe(parser(onResult));
+const testToResult = (test, onResult) => {
+  const stream = test.createStream();
+  stream.pipe(parser(onResult));
+}
 
 const runTest = (fn, onResult) => {
   const test = tapava.createHarness();
-  test(fn);
+  test('', fn);
   testToResult(test, onResult);
 };
-*/
 
 const testToString = (test, onString: (string) => void) =>
   test.createStream().pipe(concat({ encoding: 'string' }, onString));
@@ -31,7 +31,6 @@ tape('title', (t) => {
   });
 });
 
-/*
 tape('throwing is failing', (t) => {
   runTest(
     () => {
@@ -47,6 +46,7 @@ tape('throwing is failing', (t) => {
   );
 });
 
+/*
 tape('throwing is failing in callback mode', (t) => {
   const test = tapava.cb.createHarness();
 

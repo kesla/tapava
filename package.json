@@ -17,6 +17,8 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
     "deep-equal": "^1.0.1",
     "is-promise": "^2.1.0",
+    "js-yaml": "^3.8.2",
+    "object-inspect": "^1.2.1",
     "tape": "^4.5.1",
     "tmatch": "^3.0.0"
   },
