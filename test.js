@@ -308,7 +308,7 @@ tape('t.is() / t.not() failing', (t) => {
     },
   );
 });
-/*
+
 tape('t.deepEqual() / t.notDeepEqual()', (t) => {
   runTest(
     (tt) => {
@@ -349,6 +349,7 @@ tape('t.deepEqual() / t.notDeepEqual() failing', (t) => {
   );
 });
 
+/*
 tape('t.match() / t.notMatch()', (t) => {
   t.plan(6);
 
