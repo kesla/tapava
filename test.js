@@ -81,7 +81,6 @@ tape('t.pass() / t.fail()', (t) => {
   );
 });
 
-/*
 tape('promises', (t) => {
   let isAsync = false;
   runTest(
@@ -114,7 +113,7 @@ tape('promises, errors', (t) => {
     },
   );
 });
-
+/*
 tape('generator', (t) => {
   runTest(
     async (tt) => {
