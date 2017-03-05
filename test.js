@@ -349,7 +349,6 @@ tape('t.deepEqual() / t.notDeepEqual() failing', (t) => {
   );
 });
 
-/*
 tape('t.match() / t.notMatch()', (t) => {
   t.plan(6);
 
@@ -378,6 +377,7 @@ tape('t.match() / t.notMatch()', (t) => {
   );
 });
 
+/*
 tape('t.throws / t.notThrows with functions', (t) => {
   t.plan(6);
 
