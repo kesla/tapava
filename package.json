@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "miclint --flow | snazzy",
     "test:browser": "browserify test.js -t babelify -d | devtool -c -h --bf --no-nt | faucet",
-    "test:node": "nyc babel-node test.js | faucet",
+    "test:_node": "babel-node test.js | faucet",
+    "test:node": "nyc npm run test:_node",
     "test": "npm run flow && npm run test:node && npm run test:browser && npm run lint",
     "prepublish": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
     "flow": "flow"
