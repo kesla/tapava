@@ -438,69 +438,19 @@ tape('t.throws / t.notThrows with promises', (t) => {
   );
 });
 
-/*
-tape('t.end() is not allowed', (t) => {
-  runTest(
-    (tt) => {
-      tt.end();
-    },
-    (result) => {
-      t.notOk(result.ok);
-      t.equal(result.count, 1);
-      t.equal(result.fail, 1);
-      t.end();
-    },
-  );
-});
-
-tape('callback mode', (t) => {
-  const test = tapava.cb.createHarness();
-
-  test((tt) => {
-    // tt.ok should not be defined since that's a tape method
-    // and not a tapava method
-    tt.pass('yes!');
-    t.notOk(tt.ok);
-    tt.end();
-  });
-
-  testToResult(test, (result) => {
-    t.ok(result.ok);
-    t.equal(result.count, 1);
-    t.equal(result.pass, 1);
-    t.end();
-  });
-});
-
-tape('throwing is failing in callback mode', (t) => {
-  const test = tapava.cb.createHarness();
-
-  test(() => {
-    throw new Error('Foo bar');
-  });
-
-  testToResult(test, (result) => {
-    t.notOk(result.ok);
-    t.is(result.fail, 1);
-    t.is(result.count, 1);
-    t.is(result.failures[0].name, 'Error: Foo bar');
-    t.end();
-  });
-});
-
 tape('custom assertion', (t) => {
   t.plan(7);
 
-  const createCustom = tt => ({ foo }, message) => tt.custom(foo === 'bar', {
-    operator: 'foo', actual: foo, expected: 'bar', message,
+  const createCustom = tt => ({ foo }: { foo: string, }) => tt.custom(foo === 'bar', {
+    operator: 'foo', actual: foo, expected: 'bar', message: 'does not matter for this test',
   });
 
   runTest(
     (tt) => {
-      tt.foo = createCustom(tt);
       t.ok(tt.custom);
+      const foo = createCustom(tt);
 
-      tt.foo({ foo: 'bar' });
+      foo({ foo: 'bar' });
     },
     (result) => {
       t.ok(result.ok);
@@ -511,9 +461,9 @@ tape('custom assertion', (t) => {
 
   runTest(
     (tt) => {
-      tt.foo = createCustom(tt);
+      const foo = createCustom(tt);
 
-      tt.foo({ foo: 'bas' });
+      foo({ foo: 'bas' });
     },
     (result) => {
       t.notOk(result.ok);
@@ -526,4 +476,3 @@ tape('custom assertion', (t) => {
 if (process.browser) {
   tape.onFinish(global.close);
 }
-*/
