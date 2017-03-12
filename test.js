@@ -5,7 +5,7 @@ import tape from 'tape';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
 
-import tapava from './lib';
+import { createHarness } from './lib';
 
 const testToResult = (test, onResult) => {
   const stream = test.createStream();
@@ -13,7 +13,7 @@ const testToResult = (test, onResult) => {
 };
 
 const runTest = (fn, onResult) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test('', fn);
   testToResult(test, onResult);
 };
@@ -22,7 +22,7 @@ const testToString = (test, onString: (string) => void) =>
   test.createStream().pipe(concat({ encoding: 'string' }, onString));
 
 tape('title', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test('the message', () => {});
   testToString(test, (string) => {
     t.is(string.split('\n')[1], '# the message');
@@ -46,7 +46,7 @@ tape('throwing is failing', (t) => {
 });
 
 tape('simple .pass()', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
 
   test('', (tt) => {
     tt.pass('pass');
@@ -114,7 +114,7 @@ tape('promises, errors', (t) => {
 });
 
 tape('multiple', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test('test1', (tt) => {
     tt.pass('test1');
   });
@@ -134,7 +134,7 @@ tape('multiple', (t) => {
 });
 
 tape('only', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test('test1', () => {});
   test.only('test2', () => {});
   testToString(test, (string) => {
@@ -144,7 +144,7 @@ tape('only', (t) => {
 });
 
 tape('skip', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test.skip('this should not be run', () => {
     t.fail('wtf');
   });
