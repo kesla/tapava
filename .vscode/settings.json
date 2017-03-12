@@ -1,0 +1,7 @@
+  // Place your settings in this file to overwrite default and user settings.
+{
+  "eslint.options": {
+    "configFile": "node_modules/miclint/eslintrc-flow.json"
+  },
+  "javascript.validate.enable": false
+}

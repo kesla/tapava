@@ -1,4 +1,3 @@
 {
-  "presets": ["es2015"],
-  "plugins": ["fast-async"]
+  "plugins": ["transform-es2015-modules-commonjs", "fast-async", "transform-flow-strip-types"]
 }

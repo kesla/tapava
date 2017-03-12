@@ -1,26 +1,28 @@
+// @flow
 /* eslint-disable import/no-extraneous-dependencies, no-param-reassign */
 
 import tape from 'tape';
 import parser from 'tap-parser';
 import concat from 'concat-stream';
-import Promise from 'bluebird';
 
-import tapava from './lib';
+import { createHarness } from './lib';
 
-const testToResult = (test, onResult) =>
-  test.createStream().pipe(parser(onResult));
+const testToResult = (test, onResult) => {
+  const stream = test.createStream();
+  stream.pipe(parser(onResult));
+};
 
 const runTest = (fn, onResult) => {
-  const test = tapava.createHarness();
-  test(fn);
+  const test = createHarness();
+  test('', fn);
   testToResult(test, onResult);
 };
 
-const testToString = (test, onString) =>
+const testToString = (test, onString: (string) => void) =>
   test.createStream().pipe(concat({ encoding: 'string' }, onString));
 
 tape('title', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test('the message', () => {});
   testToString(test, (string) => {
     t.is(string.split('\n')[1], '# the message');
@@ -39,45 +41,43 @@ tape('throwing is failing', (t) => {
       t.is(result.count, 1);
       t.is(result.failures[0].name, 'Error: Foo bar');
       t.end();
-    }
+    },
   );
 });
 
-tape('throwing is failing in callback mode', (t) => {
-  const test = tapava.cb.createHarness();
-
-  test(() => {
-    throw new Error('Foo bar');
-  });
-
-  testToResult(test, (result) => {
-    t.notOk(result.ok);
-    t.is(result.fail, 1);
-    t.is(result.count, 1);
-    t.is(result.failures[0].name, 'Error: Foo bar');
-    t.end();
-  });
-});
-
 tape('simple .pass()', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
 
-  test((tt) => {
+  test('', (tt) => {
     tt.pass('pass');
   });
 
   const p = parser((result) => {
     t.ok(result.ok);
+    t.is(result.fail, 0);
     t.is(result.pass, 1);
     t.is(result.count, 1);
     t.end();
   });
 
-  const s = test.createStream();
-  s.pipe(p);
-  setImmediate(() => {
-    s.end();
-  });
+  test.createStream().pipe(p);
+});
+
+
+tape('t.pass() / t.fail()', (t) => {
+  runTest(
+    (tt) => {
+      tt.pass('passing!');
+      tt.fail('noes');
+    },
+    (result) => {
+      t.notOk(result.ok);
+      t.equal(result.count, 2);
+      t.equal(result.pass, 1);
+      t.equal(result.fail, 1);
+      t.end();
+    },
+  );
 });
 
 tape('promises', (t) => {
@@ -95,7 +95,7 @@ tape('promises', (t) => {
       t.equal(result.count, 1);
       t.equal(result.pass, 1);
       t.end();
-    }
+    },
   );
 });
 
@@ -109,32 +109,32 @@ tape('promises, errors', (t) => {
       t.equal(result.count, 1);
       t.equal(result.fail, 1);
       t.end();
-    }
+    },
   );
 });
 
-tape('generator', (t) => {
-  runTest(
-    async (tt) => {
-      tt.pass('first');
-      await new Promise((resolve) => {
-        setImmediate(() => {
-          tt.pass('bling bling');
-          resolve();
-        });
-      });
-    },
-    (result) => {
-      t.ok(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.pass, 2);
-      t.end();
-    }
-  );
+tape('multiple', (t) => {
+  const test = createHarness();
+  test('test1', (tt) => {
+    tt.pass('test1');
+  });
+  test('test2', async (tt) => {
+    tt.pass('test2');
+  });
+
+  testToString(test, (string) => {
+    const rows = string.trim().split('\n');
+    t.is(rows[1], '# test1');
+    t.is(rows[3], '# test2');
+    t.is(rows[rows.length - 3], '# tests 2');
+    t.is(rows[rows.length - 2], '# pass 2');
+    t.is(rows[rows.length - 1], '# fail 0');
+    t.end();
+  });
 });
 
 tape('only', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test('test1', () => {});
   test.only('test2', () => {});
   testToString(test, (string) => {
@@ -144,7 +144,7 @@ tape('only', (t) => {
 });
 
 tape('skip', (t) => {
-  const test = tapava.createHarness();
+  const test = createHarness();
   test.skip('this should not be run', () => {
     t.fail('wtf');
   });
@@ -167,23 +167,24 @@ tape('t.plan()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
-tape('t.pass() / t.fail()', (t) => {
+tape('t.plan(), failing', (t) => {
   runTest(
     (tt) => {
+      tt.plan(3);
       tt.pass('passing!');
-      tt.fail('noes');
+      tt.pass('passing2');
     },
     (result) => {
       t.notOk(result.ok);
-      t.equal(result.count, 2);
-      t.equal(result.pass, 1);
+      t.equal(result.count, 3);
+      t.equal(result.pass, 2);
       t.equal(result.fail, 1);
       t.end();
-    }
+    },
   );
 });
 
@@ -198,7 +199,7 @@ tape('t.truthy() / t.falsy() passing', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -223,7 +224,7 @@ tape('t.truthy() / t.falsy() failing', (t) => {
       t.equal(result.count, 4);
       t.equal(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -238,7 +239,7 @@ tape('t.true() / t.false()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -251,19 +252,19 @@ tape('t.true() / t.false() failing', (t) => {
       tt.false(0, 'bar');
     },
     (result) => {
-      t.equal(result.failures[0].diag.operator, true);
-      t.equal(result.failures[0].name, 'should be true');
-      t.equal(result.failures[1].diag.operator, false);
-      t.equal(result.failures[1].name, 'should be false');
-      t.equal(result.failures[2].diag.operator, true);
-      t.equal(result.failures[2].name, 'foo');
-      t.equal(result.failures[3].diag.operator, false);
-      t.equal(result.failures[3].name, 'bar');
+      t.is(result.failures[0].diag.operator, 'true');
+      t.is(result.failures[0].name, 'should be true');
+      t.is(result.failures[1].diag.operator, 'false');
+      t.is(result.failures[1].name, 'should be false');
+      t.is(result.failures[2].diag.operator, 'true');
+      t.is(result.failures[2].name, 'foo');
+      t.is(result.failures[3].diag.operator, 'false');
+      t.is(result.failures[3].name, 'bar');
       t.notOk(result.ok);
-      t.equal(result.count, 4);
-      t.equal(result.fail, 4);
+      t.is(result.count, 4);
+      t.is(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -278,7 +279,7 @@ tape('t.is() / t.not()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -303,7 +304,7 @@ tape('t.is() / t.not() failing', (t) => {
       t.equal(result.count, 4);
       t.equal(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -318,7 +319,7 @@ tape('t.deepEqual() / t.notDeepEqual()', (t) => {
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
       t.end();
-    }
+    },
   );
 });
 
@@ -343,7 +344,7 @@ tape('t.deepEqual() / t.notDeepEqual() failing', (t) => {
       t.equal(result.count, 4);
       t.equal(result.fail, 4);
       t.end();
-    }
+    },
   );
 });
 
@@ -359,7 +360,7 @@ tape('t.match() / t.notMatch()', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
-    }
+    },
   );
 
   runTest(
@@ -371,7 +372,7 @@ tape('t.match() / t.notMatch()', (t) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
-    }
+    },
   );
 });
 
@@ -389,7 +390,7 @@ tape('t.throws / t.notThrows with functions', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
-    }
+    },
   );
 
   runTest(
@@ -403,7 +404,7 @@ tape('t.throws / t.notThrows with functions', (t) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
-    }
+    },
   );
 });
 
@@ -420,7 +421,7 @@ tape('t.throws / t.notThrows with promises', (t) => {
       t.ok(result.ok);
       t.equal(result.count, 2);
       t.equal(result.pass, 2);
-    }
+    },
   );
 
   runTest(
@@ -433,75 +434,42 @@ tape('t.throws / t.notThrows with promises', (t) => {
       t.notOk(result.ok);
       t.equal(result.count, 2);
       t.equal(result.fail, 2);
-    }
-  );
-});
-
-tape('t.end() is not allowed', (t) => {
-  runTest(
-    (tt) => {
-      tt.end();
     },
-    (result) => {
-      t.notOk(result.ok);
-      t.equal(result.count, 1);
-      t.equal(result.fail, 1);
-      t.end();
-    }
   );
-});
-
-tape('callback mode', (t) => {
-  const test = tapava.cb.createHarness();
-
-  test((tt) => {
-    // tt.ok should not be defined since that's a tape method
-    // and not a tapava method
-    tt.pass('yes!');
-    t.notOk(tt.ok);
-    tt.end();
-  });
-
-  testToResult(test, (result) => {
-    t.ok(result.ok);
-    t.equal(result.count, 1);
-    t.equal(result.pass, 1);
-    t.end();
-  });
 });
 
 tape('custom assertion', (t) => {
   t.plan(7);
 
-  const createCustom = tt => ({ foo }, message) => tt.custom(foo === 'bar', {
-    operator: 'foo', actual: foo, expected: 'bar', message
+  const createCustom = tt => ({ foo }: { foo: string, }) => tt.custom(foo === 'bar', {
+    operator: 'foo', actual: foo, expected: 'bar', message: 'does not matter for this test',
   });
 
   runTest(
     (tt) => {
-      tt.foo = createCustom(tt);
       t.ok(tt.custom);
+      const foo = createCustom(tt);
 
-      tt.foo({ foo: 'bar' });
+      foo({ foo: 'bar' });
     },
     (result) => {
       t.ok(result.ok);
       t.equal(result.count, 1);
       t.equal(result.pass, 1);
-    }
+    },
   );
 
   runTest(
     (tt) => {
-      tt.foo = createCustom(tt);
+      const foo = createCustom(tt);
 
-      tt.foo({ foo: 'bas' });
+      foo({ foo: 'bas' });
     },
     (result) => {
       t.notOk(result.ok);
       t.equal(result.count, 1);
       t.equal(result.fail, 1);
-    }
+    },
   );
 });
 
